@@ -35,15 +35,15 @@ public class AdminController {
         return "allUsers";
     }
 
-    @GetMapping(value = "addNewUser")
-    public String addNewUser(ModelMap model) {
-        model.addAttribute("user", new User());
-        Set<Role> listRoles = roleService.getAllRoles();
-        model.addAttribute("allRoles", listRoles);
-        return "user-info";
-    }
+//    @GetMapping(value = "addNewUser")
+//    public String addNewUser(ModelMap model) {
+//        model.addAttribute("user", new User());
+//        Set<Role> listRoles = roleService.getAllRoles();
+//        model.addAttribute("allRoles", listRoles);
+//        return "redirect:/admin/";
+//    }
 
-    @PostMapping(value = "saveUser")
+    @PostMapping(value = "save")
     public String saveUser(@ModelAttribute("user") User user, @RequestParam("roles") String[] roles) {
         Set<Role> roleSet = new HashSet<>();
         for (String role : roles) {
@@ -54,16 +54,18 @@ public class AdminController {
         return "redirect:/admin/";
     }
 
-    @PatchMapping(value = "updateInfo/{id}")
-    public String updateInfo(@PathVariable("id") Long id, ModelMap model) {
-        User user = userService.getUser(id);
-        Set<Role> listRoles = roleService.getAllRoles();
-        model.addAttribute("user", user);
-        model.addAttribute("allRoles", listRoles);
-        return "user-info";
+    @PatchMapping(value = "edit/{id}")
+    public String edit(@ModelAttribute("user") User user, @RequestParam("roles") String[] roles) {
+        Set<Role> roleSet = new HashSet<>();
+        for (String role : roles) {
+            roleSet.add(roleService.findByRoleName(role));
+        }
+        user.setRoles(roleSet);
+        userService.saveUser(user);
+        return "redirect:/admin/";
     }
 
-    @DeleteMapping(value = "deleteUser/{id}")
+    @DeleteMapping(value = "delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.removeUser(id);
         return "redirect:/admin/";
