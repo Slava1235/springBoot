@@ -28,7 +28,7 @@ public class User implements UserDetails {
 
     @Column(name = "lastname")
     @NonNull
-    private String lastname;
+    private String lastName;
 
     @Column(name = "age")
     @NonNull
